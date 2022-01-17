@@ -139,7 +139,7 @@ class NotificationHelper(private val context: Context) {
         updateShortcuts(chat.contact)
         val icon = IconCompat.createWithAdaptiveBitmapContentUri(chat.contact.iconUri)
         val user = Person.Builder().setName(context.getString(R.string.sender_you)).build()
-        val person = Person.Builder().setName(chat.contact.name).setIcon(icon).build()
+        val person = Person.Builder().setName(chat.contact.replyName).setIcon(icon).build()
         val contentUri = "https://android.example.com/chat/${chat.contact.id}".toUri()
 
         val pendingIntent = PendingIntent.getActivity(
@@ -172,10 +172,22 @@ class NotificationHelper(private val context: Context) {
             }
         }
 
+        val isChatGroup = chat.contact is GroupContact
+        val bubbleIcon = if (chat.contact is GroupContact) {
+            IconCompat.createWithAdaptiveBitmapContentUri(chat.contact.groupIconUri)
+        } else {
+            icon
+        }
+
+        messagingStyle.isGroupConversation = isChatGroup
+        if (isChatGroup) {
+            messagingStyle.conversationTitle = chat.contact.name
+        }
+
         val builder = NotificationCompat.Builder(context, CHANNEL_NEW_MESSAGES)
             // A notification can be shown as a bubble by calling setBubbleMetadata()
             .setBubbleMetadata(
-                NotificationCompat.BubbleMetadata.Builder(pendingIntent, icon)
+                NotificationCompat.BubbleMetadata.Builder(pendingIntent, bubbleIcon)
                     // The height of the expanded bubble.
                     .setDesiredHeight(context.resources.getDimensionPixelSize(R.dimen.bubble_height))
                     .apply {

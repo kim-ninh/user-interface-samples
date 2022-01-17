@@ -15,6 +15,7 @@
 
 package com.example.android.people.data
 
+import android.net.Uri
 import androidx.core.net.toUri
 
 abstract class Contact(
@@ -22,6 +23,8 @@ abstract class Contact(
     val name: String,
     val icon: String
 ) {
+    open val replyName: String
+        get() = name
 
     companion object {
         val CONTACTS = listOf(
@@ -40,11 +43,13 @@ abstract class Contact(
                     photo = "content://com.example.android.people/photo/sheep_full.jpg".toUri()
                     photoMimeType = "image/jpeg"
                 }
-            }
+            },
+            GroupContact(5L, "Animal Group", "group.jpg")
         )
     }
 
-    val iconUri = "content://com.example.android.people/icon/$id".toUri()
+    open val iconUri: Uri
+        get() = "content://com.example.android.people/icon/$id".toUri()
 
     val shortcutId = "contact_$id"
 

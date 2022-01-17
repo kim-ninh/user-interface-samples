@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.android.people.R
 import com.example.android.people.VoiceCallActivity
+import com.example.android.people.data.GroupContact
 import com.example.android.people.databinding.ChatFragmentBinding
 import com.example.android.people.getNavigationController
 import com.example.android.people.ui.viewBindings
@@ -98,7 +99,12 @@ class ChatFragment : Fragment(R.layout.chat_fragment) {
                 requireActivity().setLocusContext(LocusId(contact.shortcutId), null)
                 navigationController.updateAppBar { name, icon ->
                     name.text = contact.name
-                    icon.setImageIcon(Icon.createWithAdaptiveBitmapContentUri(contact.iconUri))
+                    val iconUri = if (contact is GroupContact) {
+                        contact.groupIconUri
+                    } else {
+                        contact.iconUri
+                    }
+                    icon.setImageIcon(Icon.createWithAdaptiveBitmapContentUri(iconUri))
                     startPostponedEnterTransition()
                 }
             }

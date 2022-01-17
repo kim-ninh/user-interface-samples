@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.people.R
 import com.example.android.people.data.Contact
+import com.example.android.people.data.GroupContact
 import com.example.android.people.databinding.ChatItemBinding
 
 class ContactAdapter(
@@ -47,7 +48,12 @@ class ContactAdapter(
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val contact: Contact = getItem(position)
-        holder.binding.icon.setImageIcon(Icon.createWithAdaptiveBitmapContentUri(contact.iconUri))
+        val iconUri = if (contact is GroupContact){
+            contact.groupIconUri
+        } else {
+            contact.iconUri
+        }
+        holder.binding.icon.setImageIcon(Icon.createWithAdaptiveBitmapContentUri(iconUri))
         holder.binding.name.text = contact.name
     }
 }
